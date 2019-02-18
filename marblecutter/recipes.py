@@ -181,7 +181,7 @@ def preprocess(sources, resolution=None):
         # mjh: when zoomed out, our geotiff size is much smaller than the
         # map tile size so we might legitimately have 80+ sources in that case,
         # in order to fill the entire tile
-        if idx == 150:
+        if idx == 500:
             return
 
         if "landsat8" in source.recipes:
