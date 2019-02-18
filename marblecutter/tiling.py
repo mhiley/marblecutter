@@ -66,6 +66,7 @@ def render_tile_from_sources(
     Returns:
         (dict, bytes) -- Tuple of HTTP headers (dict) and bytes.
     """
+    LOG.info('composite # of sources: {}'.format(len(sources)))
     bounds = Bounds(mercantile.xy_bounds(tile), WEB_MERCATOR_CRS)
     shape = tuple(map(int, Affine.scale(scale) * TILE_SHAPE))
 

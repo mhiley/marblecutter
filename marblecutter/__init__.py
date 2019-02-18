@@ -304,6 +304,7 @@ def read_window(src, bounds, target_shape, source):
             else:
                 data = np.ma.masked_array(data, mask=mask)
 
+    LOG.info("Number of masked points: {}".format(np.count_nonzero(data.mask)))
     return PixelCollection(data, bounds)
 
 

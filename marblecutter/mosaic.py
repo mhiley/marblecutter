@@ -127,6 +127,7 @@ def composite(sources, bounds, shape, target_crs, expand):
 
         if not canvas.data.mask.any():
             # stop if all pixels are valid
+            LOG.info('stopping because all pixels are valid')
             break
 
     return map(lambda s: (s.name, s.url), sources_used), canvas
@@ -136,6 +137,10 @@ def paste(window_pixels, canvas_pixels):
     """ "Reproject" src data into the correct position within a larger image"""
     window_data, (window_bounds, window_crs), band, window_colormap = window_pixels
     canvas, (canvas_bounds, canvas_crs), _, canvas_colormap = canvas_pixels
+
+    LOG.info('# of masked canvas points before: {}'.format(np.count_nonzero(canvas.mask)))
+    LOG.info('# of masked window_data points before: {}'.format(np.count_nonzero(window_data.mask)))
+
     if window_crs != canvas_crs:
         raise Exception("CRSes must match: {} != {}".format(window_crs, canvas_crs))
 
@@ -158,6 +163,9 @@ def paste(window_pixels, canvas_pixels):
         )
         canvas[band] = merged_band[0]
         merged = canvas
+
+    LOG.info('# of masked canvas points after: {}'.format(np.count_nonzero(canvas.mask)))
+    LOG.info('# of masked window_data points after: {}'.format(np.count_nonzero(window_data.mask)))
 
     # drop colormaps if they differ between sources
     colormap = None

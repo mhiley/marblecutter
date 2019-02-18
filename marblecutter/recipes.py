@@ -177,7 +177,7 @@ def preprocess(sources, resolution=None):
     for idx, source in enumerate(sources):
         # TODO make this configurable
         # limit the number of sources used
-        if idx == 15:
+        if idx == 100:
             return
 
         if "landsat8" in source.recipes:
