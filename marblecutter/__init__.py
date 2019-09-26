@@ -294,23 +294,18 @@ def read_window(src, bounds, target_shape, source):
                 [geom_mask], target_shape, transform=mask_transform, invert=True
             )
 
-        # mjh: disable this use of alpha band; if band has ColorInterp=Alpha
-        #      any non-zero values will cause that pixel to be masked out.
-        #      Basically causes entire image to be masked out if Alpha band has
-        #      mostly non-zero values.
-        # if any([ColorInterp.alpha in vrt.colorinterp]):
-        #     alpha_idx = vrt.colorinterp.index(ColorInterp.alpha)
-        #     mask = [~data[alpha_idx] | mask] * (vrt.count - 1)
-        #     bands = [data[i] for i in range(0, vrt.count) if i != alpha_idx]
-        #     data = np.ma.masked_array(bands, mask=mask)
-        # else:
-
-        # mask with NODATA values
-        if src_nodata is not None and vrt.nodata is not None:
-            data = _mask(data, vrt.nodata)
-            data.mask = data.mask | mask
+        if any([ColorInterp.alpha in vrt.colorinterp]):
+            alpha_idx = vrt.colorinterp.index(ColorInterp.alpha)
+            mask = [~data[alpha_idx] | mask] * (vrt.count - 1)
+            bands = [data[i] for i in range(0, vrt.count) if i != alpha_idx]
+            data = np.ma.masked_array(bands, mask=mask)
         else:
-            data = np.ma.masked_array(data, mask=mask)
+            # mask with NODATA values
+            if src_nodata is not None and vrt.nodata is not None:
+                data = _mask(data, vrt.nodata)
+                data.mask = data.mask | mask
+            else:
+                data = np.ma.masked_array(data, mask=mask)
 
     return PixelCollection(data, bounds)
 
